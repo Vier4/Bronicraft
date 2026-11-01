@@ -684,3 +684,22 @@ body.touch #hotbar { pointer-events: auto; bottom: 6px; }
 #speedo { position: absolute; right: 14px; bottom: 80px; background: rgba(10, 12, 18, 0.6); color: #fff; padding: 8px 12px;
   font-size: 11px; line-height: 1.7; border: 2px solid rgba(255, 255, 255, 0.35); text-align: right; white-space: pre; }
 #speedo b { font-size: 20px; color: #9ff; }
+
+/* Телефон и планшет: окна и списки прокручиваются пальцем, ячейки помельче, чтобы всё влезло */
+body.touch .screen, body.touch .screen * { touch-action: pan-y; }
+body.touch { --slot: 38px; }
+@media (max-width: 600px), (max-height: 420px) { body.touch { --slot: 34px; } }
+body.touch .slot { width: var(--slot); height: var(--slot); }
+body.touch .slot img { width: calc(var(--slot) - 12px); height: calc(var(--slot) - 12px); }
+body.touch .slot .cnt { font-size: 8px; }
+body.touch .slot-grid { grid-template-columns: repeat(9, var(--slot)); gap: 2px; }
+body.touch .slot-grid.hot { margin-top: 6px; }
+body.touch .inv-panel { grid-template-columns: auto minmax(0, 1fr); gap: 10px; padding: 10px; max-height: 96vh; max-width: 98vw; }
+@media (max-width: 640px) { body.touch .inv-panel { grid-template-columns: 1fr; } }
+body.touch .inv-panel h2 { font-size: 12px; margin: 2px 0 6px; }
+body.touch .inv-left .hint { display: none; }
+body.touch #palette-blocks { grid-template-columns: repeat(auto-fill, var(--slot)); max-height: 58vh; gap: 2px; }
+body.touch #recipes { max-height: 58vh; }
+body.touch #palette-cats .cat { font-size: 8px; padding: 6px 7px; }
+body.touch #palette-search { font-size: 12px; }
+body.touch #btn-inv-close { padding: 10px 18px; }

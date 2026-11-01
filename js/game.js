@@ -1527,6 +1527,7 @@
   if (TOUCH) {
     document.body.classList.add('touch');
     freeMouse = true;                                    // мыши нет — игра идёт без захвата курсора
+    $('btn-inv-close').textContent = 'Готово';
     const stick = $('t-stick'), knob = $('t-knob'), jumpBtn = $('t-jump'), downBtn = $('t-down');
     const stop = e => { e.preventDefault(); e.stopPropagation(); };
     // джойстик
