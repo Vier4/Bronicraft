@@ -721,6 +721,13 @@
       $('nick-input').focus();
       return;
     }
+    if (Rude.check(name)) {
+      $('nick-input').value = '';
+      $('nick-input').classList.add('error');
+      $('nick-input').placeholder = I18N.tr('Грубо! Придумай другой');
+      $('nick-input').focus();
+      return;
+    }
     $('nick-input').classList.remove('error');
     profile = { name, skin: editor.skin.slice() };
     Store.setProfile(profile);
@@ -1040,6 +1047,14 @@
     return h;
   }
   $('btn-create-go').addEventListener('click', () => {
+    if (Rude.check($('world-name').value)) {
+      $('world-name').value = '';
+      $('world-name').placeholder = I18N.tr('Грубо! Придумай другое');
+      $('world-name').classList.add('error');
+      $('world-name').focus();
+      return;
+    }
+    $('world-name').classList.remove('error');
     audio();
     const meta = Store.createWorld({
       name: $('world-name').value.trim() || 'Мой мир',
@@ -3800,7 +3815,12 @@
   rebuildPlayer();
   renderHotbar();
   renderBars();
-  if (profile) setState('menu');
+  if (profile && Rude.check(profile.name)) {                 // грубый ник, сохранённый раньше, придётся сменить
+    openProfile();
+    $('nick-input').value = '';
+    $('nick-input').classList.add('error');
+    $('nick-input').placeholder = I18N.tr('Грубо! Придумай другой');
+  } else if (profile) setState('menu');
   else openProfile();
   requestAnimationFrame(frame);
 })();
