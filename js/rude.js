@@ -25,11 +25,20 @@ const Rude = (() => {
     for (const w of SAFE) s = s.split(w).join('#');
     return words.some(w => s.includes(w));
   }
+  // защиту можно выключить кнопкой в главном меню
+  const KEY = 'bronicraft-rude-filter';
+  function on() {
+    try { return localStorage.getItem(KEY) !== 'off'; } catch (e) { return true; }
+  }
+  function setOn(v) {
+    try { localStorage.setItem(KEY, v ? 'on' : 'off'); } catch (e) { /* ничего */ }
+  }
   function check(text) {
+    if (!on()) return false;
     const low = String(text || '').toLowerCase();
     const lat = low.replace(/[1!|]/g, 'i').replace(/0/g, 'o').replace(/3/g, 'e').replace(/@/g, 'a').replace(/\$/g, 's').replace(/[^a-z]/g, '');
     const ru = cyr(low);
     return has(lat, EN) || has(squeeze(lat), EN) || has(ru, RU) || has(squeeze(ru), RU);
   }
-  return { check };
+  return { check, on, setOn };
 })();

@@ -717,3 +717,5 @@ body.rtl #hotbar, body.rtl .slot-grid, body.rtl #info, body.rtl #touch, body.rtl
 body.rtl #lang-pick { right: auto; left: 10px; }
 @media (max-width: 900px) { #menu > :first-child, #profile > :first-child, #create > :first-child { margin-top: 42px; } }
 input.error::placeholder { color: #ff8a8a; font-size: 8px; }
+.rude-toggle { display: block; margin: 10px auto 0; font-size: 9px; }
+.rude-toggle.off { opacity: .7; }

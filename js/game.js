@@ -736,6 +736,15 @@
   });
   $('nick-input').addEventListener('keydown', e => { if (e.key === 'Enter') $('btn-profile-done').click(); });
 
+  // кнопка «Защита от грубых слов» в главном меню
+  function renderRudeBtn() {
+    const b = $('btn-rude');
+    b.textContent = Rude.on() ? 'Защита от грубых слов: включена' : 'Защита от грубых слов: выключена';
+    b.classList.toggle('off', !Rude.on());
+  }
+  $('btn-rude').addEventListener('click', () => { Rude.setOn(!Rude.on()); renderRudeBtn(); });
+  renderRudeBtn();
+
   // ---------- Главное меню и список миров ----------
   const fmtDate = t => new Date(t).toLocaleDateString(I18N.lang(), { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
   function renderMenu() {
