@@ -627,6 +627,7 @@
     const inGame = s === 'playing' || s === 'paused' || s === 'inventory' || s === 'dead';
     $('hud').classList.toggle('hidden', !inGame);
     $('crosshair').classList.toggle('hidden', s !== 'playing');
+    $('lang-pick').classList.toggle('hidden', s !== 'profile' && s !== 'menu' && s !== 'create');
     if (s !== 'playing') {
       for (const k in keys) keys[k] = false;
       mouseLeft = mouseRight = false;
@@ -729,7 +730,7 @@
   $('nick-input').addEventListener('keydown', e => { if (e.key === 'Enter') $('btn-profile-done').click(); });
 
   // ---------- Главное меню и список миров ----------
-  const fmtDate = t => new Date(t).toLocaleDateString('ru-RU', { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
+  const fmtDate = t => new Date(t).toLocaleDateString(I18N.lang(), { day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' });
   function renderMenu() {
     const skin = profile && Skin.isValid(profile.skin) ? profile.skin : Skin.defaultSkin();
     $('badge-head').src = Skin.headIcon(skin, 32);
@@ -1016,7 +1017,7 @@
     newType = 'normal';
     pickOption('type-options', 'type', newType);
     $('type-row').classList.toggle('hidden', !!map);
-    $('world-name').value = map ? map.name : 'Мир ' + (Store.listWorlds().length + 1);
+    $('world-name').value = I18N.tr(map ? map.name : 'Мир ' + (Store.listWorlds().length + 1));
     $('world-seed').value = '';
     $('create-map').textContent = map ? `Карта: «${map.name}»` : '';
     $('create-map').classList.toggle('hidden', !map);
@@ -1283,7 +1284,7 @@
     const q = $('palette-search').value.trim().toLowerCase();
     document.querySelectorAll('#palette-cats .cat').forEach(b => b.classList.toggle('selected', b.dataset.cat === paletteCat));
     [...paletteBlocks.children].forEach(el => {
-      el.classList.toggle('hidden', (paletteCat !== 'all' && el.dataset.cat !== paletteCat) || (!!q && !el.dataset.name.toLowerCase().includes(q)));
+      el.classList.toggle('hidden', (paletteCat !== 'all' && el.dataset.cat !== paletteCat) || (!!q && !el.dataset.name.toLowerCase().includes(q) && !I18N.tr(el.dataset.name).toLowerCase().includes(q)));
       el.classList.toggle('locked', !!el.dataset.mod && !modOn(el.dataset.mod));
     });
     if (!creative) {
@@ -1635,11 +1636,11 @@
     $('t-morph').classList.toggle('hidden', !modOn('morph'));
     if (!show) return;
     const jb = $('t-jump'), fly = player.flying && !riding;
-    const label = fly ? 'Полёт ▲' : 'Прыжок';
+    const label = I18N.tr(fly ? 'Полёт ▲' : 'Прыжок');
     if (jb.textContent !== label) jb.textContent = label;
     jb.classList.toggle('hidden', !!riding);                // в машине едем джойстиком
     jb.classList.toggle('fly', fly);
-    const db = $('t-down'), dl = riding ? 'Выйти' : '▼';
+    const db = $('t-down'), dl = I18N.tr(riding ? 'Выйти' : '▼');
     db.classList.toggle('hidden', !fly && !riding);
     if (db.textContent !== dl) db.textContent = dl;
   }

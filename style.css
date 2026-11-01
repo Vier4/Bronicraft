@@ -703,3 +703,16 @@ body.touch #recipes { max-height: 58vh; }
 body.touch #palette-cats .cat { font-size: 8px; padding: 6px 7px; }
 body.touch #palette-search { font-size: 12px; }
 body.touch #btn-inv-close { padding: 10px 18px; }
+
+/* ---------- Языки ---------- */
+#lang-pick { position: fixed; top: 10px; right: 10px; z-index: 50; display: flex; gap: 6px; }
+#lang-pick.hidden { display: none; }
+#lang-pick button { font-size: 9px; padding: 6px 8px; opacity: .85; }
+#lang-pick button.selected { opacity: 1; outline: 2px solid #ffd54a; }
+#lang-pick button[data-lang="ar"] { font-family: 'Cairo', sans-serif; font-size: 13px; padding: 2px 8px; }
+body.rtl, body.rtl * { font-family: 'Cairo', sans-serif; font-weight: 600; }
+body.rtl * { font-size-adjust: 0.75; }
+body.rtl .logo, body.rtl .logo *, body.rtl .slot, body.rtl .slot *, body.rtl #info, body.rtl #info * { font-family: 'Press Start 2P', 'Cairo', monospace; font-size-adjust: none; font-weight: normal; }
+body.rtl #hotbar, body.rtl .slot-grid, body.rtl #info, body.rtl #touch, body.rtl canvas, body.rtl .skin-editor { direction: ltr; }
+body.rtl #lang-pick { right: auto; left: 10px; }
+@media (max-width: 900px) { #menu > :first-child, #profile > :first-child, #create > :first-child { margin-top: 42px; } }

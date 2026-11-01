@@ -370,7 +370,7 @@ const Phone = (() => {
     body.append(h('small', '', 'Время в мире'), big, real, h('small', '', 'Секундомер'), sw, b);
     ticker = dt => {
       big.textContent = opts.clock();
-      real.textContent = 'Время дома: ' + new Date().toLocaleTimeString('ru-RU', { hour: '2-digit', minute: '2-digit' });
+      real.textContent = 'Время дома: ' + new Date().toLocaleTimeString(I18N.lang(), { hour: '2-digit', minute: '2-digit' });
       if (run) t += dt;
       sw.textContent = t.toFixed(1) + ' с';
     };
