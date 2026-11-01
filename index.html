@@ -1,0 +1,322 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+  <title>Bronicraft</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css?v=45">
+</head>
+<body>
+  <canvas id="game"></canvas>
+
+  <!-- Игровой интерфейс -->
+  <div id="hud" class="hidden">
+    <div id="water-overlay"></div>
+    <div id="hurt-overlay"></div>
+    <div id="crosshair"></div>
+    <div id="info"></div>
+    <div id="blockname"></div>
+    <div id="speedo" class="hidden"></div>
+    <div id="bars">
+      <div id="hearts"></div>
+      <div id="air"></div>
+    </div>
+    <div id="hotbar"></div>
+  </div>
+
+  <!-- Управление на телефоне и планшете -->
+  <div id="touch" class="hidden">
+    <div id="t-stick"><div id="t-knob"></div></div>
+    <div id="t-top">
+      <button id="t-pause" title="Пауза">⏸</button>
+      <button id="t-inv" title="Инвентарь">🎒</button>
+      <button id="t-cam" title="Камера">🎥</button>
+      <button id="t-morph" title="Превращения" class="hidden">🐷</button>
+    </div>
+    <button id="t-down" class="hidden">▼</button>
+    <button id="t-jump">Прыжок</button>
+  </div>
+
+  <!-- Первый вход: скин и ник -->
+  <div id="profile" class="screen hidden">
+    <div class="panel profile-panel">
+      <h2>Создай своего героя</h2>
+      <div class="profile-body">
+        <canvas id="skin-editor"></canvas>
+        <div class="profile-side">
+          <label class="field">
+            <span>Никнейм</span>
+            <input id="nick-input" maxlength="16" placeholder="Например, Броня" autocomplete="off">
+          </label>
+          <div class="label">Инструмент</div>
+          <div class="tools">
+            <button class="tool selected" data-tool="brush">Кисть</button>
+            <button class="tool" data-tool="fill">Заливка</button>
+            <button class="tool" data-tool="pick">Пипетка</button>
+          </div>
+          <div class="label">Цвет</div>
+          <div id="palette"></div>
+          <label class="color-row"><input type="color" id="color-input" value="#ff7eb6"> свой цвет</label>
+          <p class="hint">Рисуй внутри белых рамок: голова, тело, руки и ноги. Это твой герой спереди.</p>
+          <button id="btn-skin-reset" class="small">Начать заново</button>
+          <button id="btn-profile-done">Готово!</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Главное меню -->
+  <div id="menu" class="screen hidden">
+    <h1 class="logo"><span class="logo-a">BRONI</span><span class="logo-b">CRAFT</span></h1>
+    <p class="subtitle">Строй свой мир по кубику!</p>
+    <div class="menu-body">
+      <div class="player-badge">
+        <img id="badge-head" alt="">
+        <span id="badge-name"></span>
+        <button id="btn-edit-profile" class="small">Изменить героя</button>
+      </div>
+      <div class="tabs">
+        <button class="tab selected" data-tab="worlds">Миры</button>
+        <button class="tab" data-tab="mods">Моды</button>
+        <button class="tab" data-tab="maps">Карты</button>
+      </div>
+      <div id="tab-worlds" class="tab-body">
+        <div class="panel worlds-panel">
+          <h2>Мои миры</h2>
+          <div id="world-list"></div>
+        </div>
+        <button id="btn-create">Создать новый мир</button>
+      </div>
+      <div id="tab-maps" class="tab-body hidden">
+        <div class="panel mods-panel">
+          <h2>Карты</h2>
+          <div id="map-list"></div>
+        </div>
+      </div>
+      <div id="tab-mods" class="tab-body hidden">
+        <div class="panel mods-panel">
+          <h2>Моды</h2>
+          <div id="mod-list"></div>
+        </div>
+      </div>
+    </div>
+    <details class="controls-box">
+      <summary>Управление</summary>
+      <div class="controls">
+        <div><b>W A S D</b> ходить</div>
+        <div><b>Мышь</b> смотреть</div>
+        <div><b>Пробел</b> прыжок</div>
+        <div><b>Shift</b> бег</div>
+        <div><b>ЛКМ (держать)</b> добывать / бить</div>
+        <div><b>ПКМ</b> поставить блок</div>
+        <div><b>1–9 / колёсико</b> выбрать</div>
+        <div><b>E</b> инвентарь и крафт</div>
+        <div><b>V</b> камера: глаза / сзади / спереди</div>
+        <div><b>F / 2× пробел</b> полёт (творчество)</div>
+        <div><b>Shift в полёте</b> вниз</div>
+        <div><b>Esc</b> пауза</div>
+        <div><b>ПКМ по верстаку</b> крафт</div>
+        <div><b>ПКМ с едой</b> съесть</div>
+        <div><b>ПКМ по кровати</b> поспать</div>
+        <div><b>ПКМ по машине</b> сесть</div>
+        <div><b>Shift в машине</b> выйти</div>
+        <div><b>В самолёте</b> W газ, мышь — куда лететь</div>
+        <div><b>ПКМ по поезду</b> сесть в метро</div>
+        <div><b>ПКМ по жителю</b> поболтать</div>
+        <div><b>ПКМ по компьютеру</b> включить</div>
+        <div><b>ПКМ с телефоном</b> открыть телефон</div>
+      </div>
+    </details>
+  </div>
+
+  <!-- Создание мира -->
+  <div id="create" class="screen hidden">
+    <div class="panel create-panel">
+      <h2>Новый мир</h2>
+      <p id="create-map" class="map-label hidden"></p>
+      <label class="field">
+        <span>Название мира</span>
+        <input id="world-name" maxlength="24" autocomplete="off">
+      </label>
+      <div class="label">Режим игры</div>
+      <div class="options" id="mode-options">
+        <button class="opt selected" data-mode="survival"><b>Выживание</b><small>Начинаешь с пустыми руками. Добывай, крафти, выживай!</small></button>
+        <button class="opt" data-mode="creative"><b>Творчество</b><small>Все блоки сразу, можно летать, нельзя погибнуть</small></button>
+      </div>
+      <div id="type-row">
+        <div class="label">Тип мира</div>
+        <div class="options" id="type-options">
+          <button class="opt selected" data-type="normal"><b>Обычный</b><small>Горы, леса, моря, пещеры, шахты и деревни</small></button>
+          <button class="opt" data-type="flat"><b>Плоский</b><small>Ровная трава до горизонта — для больших построек</small></button>
+        </div>
+      </div>
+      <div class="label">Сложность</div>
+      <div class="options four" id="diff-options">
+        <button class="opt" data-diff="peaceful"><b>Мирный</b><small>Нет монстров, здоровье быстро растёт</small></button>
+        <button class="opt" data-diff="easy"><b>Лёгкий</b><small>Ночью немного слабых монстров</small></button>
+        <button class="opt selected" data-diff="normal"><b>Нормальный</b><small>Обычная игра</small></button>
+        <button class="opt" data-diff="hard"><b>Сложный</b><small>Сильные монстры, вещи теряются</small></button>
+      </div>
+      <label class="field">
+        <span>Ключ мира (необязательно)</span>
+        <input id="world-seed" maxlength="20" placeholder="случайный" autocomplete="off">
+      </label>
+      <div class="row-buttons">
+        <button id="btn-create-cancel" class="small">Назад</button>
+        <button id="btn-create-go">Создать мир</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Загрузка мира -->
+  <div id="loading" class="screen hidden">
+    <h2 id="loading-title"></h2>
+    <p id="loading-status">Строим мир…</p>
+    <button id="btn-start" disabled>Начать игру</button>
+  </div>
+
+  <!-- Пауза -->
+  <div id="pause" class="screen hidden">
+    <h2>Пауза</h2>
+    <p id="pause-world"></p>
+    <button id="btn-resume">Продолжить</button>
+    <button id="btn-menu">Сохранить и выйти</button>
+    <p id="pause-hint"></p>
+  </div>
+
+  <!-- Смерть -->
+  <div id="death" class="screen death hidden">
+    <h2>Ты погиб!</h2>
+    <p id="death-text"></p>
+    <button id="btn-respawn">Возродиться</button>
+    <button id="btn-death-menu">Сохранить и выйти</button>
+  </div>
+
+  <!-- Инвентарь -->
+  <div id="inventory" class="screen hidden">
+    <div class="panel inv-panel">
+      <div class="inv-left">
+        <h2>Инвентарь</h2>
+        <div id="inv-main" class="slot-grid"></div>
+        <div id="inv-hot" class="slot-grid hot"></div>
+        <p class="hint">Нажми на ячейку, чтобы взять вещь, и на другую — чтобы положить.<br>Правая кнопка — по одной штуке.</p>
+        <button id="inv-cams" class="small hidden">📺 Смотреть камеры</button>
+      </div>
+      <div class="inv-right">
+        <h2 id="inv-right-title">Крафт</h2>
+        <p id="inv-table-hint" class="hint">Здесь — простые рецепты. Остальные откроются на верстаке: сделай его из 4 досок, поставь и нажми на него правой кнопкой.</p>
+        <div id="recipes"></div>
+        <div id="palette-tools" class="hidden">
+          <input id="palette-search" placeholder="Поиск по названию…" autocomplete="off">
+          <div id="palette-cats"></div>
+        </div>
+        <div id="palette-blocks" class="slot-grid"></div>
+        <!-- сундук или печка, которую открыли -->
+        <div id="box-ui" class="hidden">
+          <div id="chest-grid" class="slot-grid"></div>
+          <div id="furnace-ui">
+            <div class="fur-col">
+              <div id="fur-in"></div>
+              <div class="fur-flame"><div id="fur-flame-fill"></div></div>
+              <div id="fur-fuel"></div>
+            </div>
+            <div class="fur-arrow"><div id="fur-arrow-fill"></div></div>
+            <div id="fur-out"></div>
+          </div>
+          <p id="box-hint" class="hint"></p>
+        </div>
+      </div>
+      <button id="btn-inv-close">Готово (E)</button>
+    </div>
+  </div>
+
+  <!-- Лифт (мод) -->
+  <div id="lift" class="screen hidden">
+    <div class="panel lift-panel">
+      <h2>Лифт</h2>
+      <p class="hint">Выбери этаж</p>
+      <div id="lift-floors"></div>
+      <button id="lift-close" class="small">Закрыть</button>
+    </div>
+  </div>
+  <div id="lift-ride" class="hidden"><div class="lift-ride-box"><span id="lift-ride-floor"></span><small>Лифт едет…</small></div></div>
+
+  <!-- Превращения (мод) -->
+  <div id="morph" class="screen hidden">
+    <div class="panel morph-panel">
+      <h2>Превращения</h2>
+      <p class="hint">В кого превратиться? Правая кнопка с пустой рукой — голос (а курочка несёт яйца).</p>
+      <div id="morph-grid"></div>
+      <button id="morph-close" class="small">Закрыть (R)</button>
+    </div>
+  </div>
+
+  <!-- Камеры видеонаблюдения (мод): прямой эфир и запись -->
+  <div id="cams" class="screen hidden">
+    <div class="panel cams-panel">
+      <h2>📺 Камеры</h2>
+      <div class="cams-body">
+        <div id="cams-list"></div>
+        <div class="cams-view">
+          <div class="cams-screen"><img id="cams-img" alt=""><div id="cams-empty"></div></div>
+          <div class="cams-ctrl">
+            <button id="cams-live" class="small">● Прямой эфир</button>
+            <button id="cams-play" class="small">▶</button>
+            <input id="cams-time" type="range" min="0" max="0" value="0">
+            <span id="cams-label"></span>
+          </div>
+        </div>
+      </div>
+      <button id="cams-close" class="small">Закрыть</button>
+    </div>
+  </div>
+
+  <!-- World changing (мод): правка мира палочкой -->
+  <div id="we" class="screen hidden">
+    <div class="panel we-panel">
+      <h2>World changing</h2>
+      <p id="we-status" class="hint"></p>
+      <div class="we-row"><b>Блок:</b><div id="we-block" class="we-pick"></div></div>
+      <div class="we-row"><b>Менять только:</b><div id="we-mask" class="we-pick"></div></div>
+      <div class="we-row we-opts">
+        <label>Число / радиус <input id="we-n" type="number" min="1" max="48" value="5"></label>
+        <label>Высота <input id="we-h" type="number" min="1" max="100" value="5"></label>
+        <label><input id="we-hollow" type="checkbox"> пустые внутри</label>
+        <label><input id="we-brush" type="checkbox"> кисть-шар на правую кнопку</label>
+      </div>
+      <div id="we-actions"></div>
+      <button id="we-close" class="small">Закрыть (G)</button>
+    </div>
+  </div>
+
+  <!-- Телефон (мод) -->
+  <div id="phone" class="screen hidden"></div>
+
+  <!-- Компьютер (мод) -->
+  <div id="computer" class="screen hidden"></div>
+
+  <div id="tooltip" class="hidden"></div>
+  <div id="cursor-stack" class="hidden"><img alt=""><span></span></div>
+
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+  <script src="js/noise.js?v=45"></script>
+  <script src="js/blocks.js?v=45"></script>
+  <script src="js/world.js?v=45"></script>
+  <script src="js/physics.js?v=45"></script>
+  <script src="js/inventory.js?v=45"></script>
+  <script src="js/storage.js?v=45"></script>
+  <script src="js/skin.js?v=45"></script>
+  <script src="js/mobs.js?v=45"></script>
+  <script src="js/cars.js?v=45"></script>
+  <script src="js/planes.js?v=45"></script>
+  <script src="js/realveh.js?v=45"></script>
+  <script src="js/trains.js?v=45"></script>
+  <script src="js/shaders.js?v=45"></script>
+  <script src="js/computer.js?v=45"></script>
+  <script src="js/phone.js?v=45"></script>
+  <script src="js/game.js?v=45"></script>
+</body>
+</html>
